@@ -83,6 +83,18 @@
       (directory-files-recursively "~/notes" "\\.org$"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; VISUALS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; title bar colork (only macOS)
+(set-frame-parameter nil 'ns-appearance 'dark)
+(set-frame-parameter nil 'ns-transparent-titlebar nil)
+
+;; Set the title bar color
+(defun set-windows-title-bar-color (color)
+  (interactive "sEnter title bar color (RGB hex value): ")
+  (let ((cmd (format "0x%x" (string-to-number color 16))))
+    (w32-send-sys-command 0xf060 (string-to-number cmd))))
+
+;; Usage: M-x set-windows-title-bar-color
+
 ;; theme
 ;;(after! doom-themes
 ;;  (load-theme 'choose-theme))
@@ -146,10 +158,10 @@
 (setq-default buffer-file-coding-system 'utf-8-unix)
 
 ;; make links to file be opened with system default apps
-(setq org-file-apps '(("\\.pdf\\'" . default)
-                      ("\\.docx\\'" . default)
+;;(setq org-file-apps '(("\\.pdf\\'" . default)
+;;                      ("\\.docx\\'" . default)
                       ;; Add more file extensions and corresponding actions as needed
-                      ))
+;;                      ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; export options ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'ox-extra)
@@ -179,16 +191,44 @@
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   )
 
+;; set latex fragments as svg
+(setq org-preview-latex-default-process 'dvisvgm) ;No blur when scaling
+;; some scaling options
+(defun my/text-scale-adjust-latex-previews ()
+  "Adjust the size of latex preview fragments when changing the
+buffer's text scale."
+  (pcase major-mode
+    ('latex-mode
+     (dolist (ov (overlays-in (point-min) (point-max)))
+       (if (eq (overlay-get ov 'category)
+               'preview-overlay)
+           (my/text-scale--resize-fragment ov))))
+    ('org-mode
+     (dolist (ov (overlays-in (point-min) (point-max)))
+       (if (eq (overlay-get ov 'org-overlay-type)
+               'org-latex-overlay)
+           (my/text-scale--resize-fragment ov))))))
+
+(defun my/text-scale--resize-fragment (ov)
+  (overlay-put
+   ov 'display
+   (cons 'image
+         (plist-put
+          (cdr (overlay-get ov 'display))
+          :scale (+ 1.0 (* 0.25 text-scale-mode-amount))))))
+
+(add-hook 'text-scale-mode-hook #'my/text-scale-adjust-latex-previews)
 ;; org-latex-preview settings and org-fragtog-mode (that uses the latter) 
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 ;; scale
 (after! setq org-format-latex-options (plist-put org-format-latex-options :scale 1.75))
+
 ;; color
 
 ;; https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview-fragments-in-org-mode/
 ;; THIS DOESN'T WORK :(
 ;; specify the justification you want
-(after! setq org-format-latex-options (plist-put org-format-latex-options :justify 'center))
+(plist-put org-format-latex-options :justify 'center)
 
 (defun org-justify-fragment-overlay (beg end image imagetype)
   "Adjust the justification of a LaTeX fragment.
@@ -228,6 +268,7 @@ line are justified."
 (advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip)
 
 
+;; insert image
 (eval-when-compile
   (require 'image-file))
 
@@ -327,3 +368,20 @@ With numeric ARG, display the images if and only if ARG is positive."
 ;; arch-tag: f6f8e29a-08f6-4a12-9496-51e67441ce65
 ;;; iimage.el ends here
 
+;; set default directory 
+(setq default-directory "~/notes/");
+
+;; org-reveal
+(require 'ox-reveal)
+(setq org-reveal-root "./reveal.js-4.5.0")
+
+
+(set-clipboard-coding-system 'utf-16le)
+;;nov.el (epub reader) not working (on github says it's archived so pff)
+;;(setq nov-unzip-program (executable-find "C:/Program Files (x86)/GnuWin32/bin/unzip.exe"))
+;;(setq directory "C:/Users/Admin/Desktop/bookshelf/unzip")
+;;(setq filename "example.epub")
+;;(setq nov-unzip-args (list "-xC" directory "-f" filename))
+;;(setq nov-unzip-program (executable-find "C:/Program Files/7-Zip/7z.exe"))
+;;(setq nov-unzip-args '("-q" "-x!META-INF/*" "-x!EPUB/css/*" "-x!EPUB/fonts/*"))
+;;(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))

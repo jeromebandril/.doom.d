@@ -52,3 +52,6 @@
 
 (package! modus-themes)
 (package! org-fragtog)
+(package! org-noter)
+(package! ox-reveal)
+(package! nov)
