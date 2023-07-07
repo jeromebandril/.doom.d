@@ -87,7 +87,7 @@
 (set-frame-parameter nil 'ns-appearance 'dark)
 (set-frame-parameter nil 'ns-transparent-titlebar nil)
 
-;; Set the title bar color
+;; Set the title bar color (works on macOS)
 (defun set-windows-title-bar-color (color)
   (interactive "sEnter title bar color (RGB hex value): ")
   (let ((cmd (format "0x%x" (string-to-number color 16))))
@@ -96,58 +96,34 @@
 ;; Usage: M-x set-windows-title-bar-color
 
 ;; theme
-;;(after! doom-themes
-;;  (load-theme 'choose-theme))
 (setq doom-theme 'doom-vibrant)
+;;doom-vibrant; ef-dark
+;;ovverride theme with custom colors
+(custom-set-faces
+  ;; Override the foreground color
+  '(default ((t (:foreground "#f5f5f5")))))
 
-;; font 
-(setq doom-font (font-spec :family "Roboto Mono" :size 15))
+;; font
+(setq doom-font (font-spec :family "Source Code Pro" :size 15))
+;;(setq doom-font (font-spec :family "Roboto Mono" :size 15))
 
 ;; activate ligatures
 (global-prettify-symbols-mode 1)
 (setq font-smoothing 'antialias)
 
-;; Load the custom org-bullets package
-(load! "jerome-org-bullets/org-bullets")
+;; better headers bullets
+(require 'org-superstar)
+(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
 
-;; better bullets
-(font-lock-add-keywords 'org-mode
-                        '(("^ *\\([-]\\) "
-                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-;;better headers bullets 
-(use-package org-bullets
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-;; better headers
-;;  (let* ((variable-tuple
-;;          (cond ((x-list-fonts "Roboto Mono")         '(:font "Roboto Mono"))
-;;                ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-;;                ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-;;                ((x-list-fonts "Verdana")         '(:font "Verdana"))
-;;                ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-;;                (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-;;         (base-font-color     (face-foreground 'default nil 'default))
-;;         (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
-;;
-;;    (custom-theme-set-faces
-;;     'user
-;;     `(org-level-8 ((t (,@headline ,@variable-tuple))))
-;;     `(org-level-7 ((t (,@headline ,@variable-tuple))))
-;;     `(org-level-6 ((t (,@headline ,@variable-tuple))))
-;;     `(org-level-5 ((t (,@headline ,@variable-tuple))))
-;;     `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
-;;     `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
-;;     `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
-;;     `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
-;;     `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
-
+;; better plain list bullets
 
 ;; custom ellipsis
 ;; Set custom ellipsis character
 ;(set-face-underline 'org-ellipsis nil)
-(setq org-ellipsis " ▼")
-;; ⤵ ▼ ⬎  
+;;(setq org-ellipsis " ↴")
+(setq org-ellipsis " ↴")
+;; ⤵ ▼ ⬎  ↴
+(custom-set-faces '(org-ellipsis ((t (:underline t)))))
 
 ;; hide emphasis
 (setq org-hide-emphasis-markers t)
@@ -156,6 +132,10 @@
 
 ;; default encoding system
 (setq-default buffer-file-coding-system 'utf-8-unix)
+;; utf-8-unix
+
+;;fix copy and paste (encode characters problem) from outside emacs
+(set-clipboard-coding-system 'utf-16le)
 
 ;; make links to file be opened with system default apps
 ;;(setq org-file-apps '(("\\.pdf\\'" . default)
@@ -365,18 +345,13 @@ With numeric ARG, display the images if and only if ARG is positive."
 
 (provide 'iimage)
 
-;; arch-tag: f6f8e29a-08f6-4a12-9496-51e67441ce65
-;;; iimage.el ends here
-
-;; set default directory 
+;; set default directory
 (setq default-directory "~/notes/");
 
 ;; org-reveal
 (require 'ox-reveal)
 (setq org-reveal-root "./reveal.js-4.5.0")
 
-
-(set-clipboard-coding-system 'utf-16le)
 ;;nov.el (epub reader) not working (on github says it's archived so pff)
 ;;(setq nov-unzip-program (executable-find "C:/Program Files (x86)/GnuWin32/bin/unzip.exe"))
 ;;(setq directory "C:/Users/Admin/Desktop/bookshelf/unzip")
@@ -385,3 +360,4 @@ With numeric ARG, display the images if and only if ARG is positive."
 ;;(setq nov-unzip-program (executable-find "C:/Program Files/7-Zip/7z.exe"))
 ;;(setq nov-unzip-args '("-q" "-x!META-INF/*" "-x!EPUB/css/*" "-x!EPUB/fonts/*"))
 ;;(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+

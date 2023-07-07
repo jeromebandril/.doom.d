@@ -51,7 +51,15 @@
 
 
 (package! modus-themes)
+(package! ef-themes)
 (package! org-fragtog)
 (package! org-noter)
 (package! ox-reveal)
 (package! nov)
+(package! yasnippet)
+(package! org-superstar)
+
+(package! example :recipe
+  (:host github
+   :repo "jakebox/jake-emacs"
+   :files ("*.el" "themes/*.el")))
