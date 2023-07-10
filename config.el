@@ -96,16 +96,16 @@
 ;; Usage: M-x set-windows-title-bar-color
 
 ;; theme
-(setq doom-theme 'doom-vibrant)
+(setq doom-theme 'doom-ayu-dark)
 ;;doom-vibrant; ef-dark
 ;;ovverride theme with custom colors
 (custom-set-faces
-  ;; Override the foreground color
+   ;;Override the foreground color
   '(default ((t (:foreground "#f5f5f5")))))
 
 ;; font
-(setq doom-font (font-spec :family "Source Code Pro" :size 15))
-;;(setq doom-font (font-spec :family "Roboto Mono" :size 15))
+;;(setq doom-font (font-spec :family "Source Code Pro" :size 15))
+(setq doom-font (font-spec :family "Roboto Mono" :size 15))
 
 ;; activate ligatures
 (global-prettify-symbols-mode 1)
@@ -123,7 +123,7 @@
 ;;(setq org-ellipsis " ↴")
 (setq org-ellipsis " ↴")
 ;; ⤵ ▼ ⬎  ↴
-(custom-set-faces '(org-ellipsis ((t (:underline t)))))
+(custom-set-faces '(org-ellipsis ((t (:underline t :foreground "#62686e")))))
 
 ;; hide emphasis
 (setq org-hide-emphasis-markers t)
@@ -360,4 +360,3 @@ With numeric ARG, display the images if and only if ARG is positive."
 ;;(setq nov-unzip-program (executable-find "C:/Program Files/7-Zip/7z.exe"))
 ;;(setq nov-unzip-args '("-q" "-x!META-INF/*" "-x!EPUB/css/*" "-x!EPUB/fonts/*"))
 ;;(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-

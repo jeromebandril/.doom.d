@@ -59,7 +59,12 @@
 (package! yasnippet)
 (package! org-superstar)
 
-(package! example :recipe
+(package! jake-emacs-themes :recipe
   (:host github
    :repo "jakebox/jake-emacs"
    :files ("*.el" "themes/*.el")))
+
+(package! org-hapit-plus :recipe
+  (:host github
+   :repo "myshevchuk/org-habit-plus"
+   :files ("org-habit-plus.el")))
